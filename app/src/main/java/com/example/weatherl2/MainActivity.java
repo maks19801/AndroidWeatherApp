@@ -65,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_color_style:
                 changeStyle();
                 return true;
+            case R.id.action_something:
+                Toast.makeText(MainActivity.this, "Reserved for future feature", Toast.LENGTH_SHORT).show();
+                return true;
             case R.id.action_appInfo:
                 applicationInfo();
                 return true;
