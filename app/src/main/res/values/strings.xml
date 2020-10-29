@@ -2,4 +2,15 @@
     <string name="app_name">WeatherApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_locations">Locations</string>
+    <string name="action_color_style">Color Style</string>
+    <string name="action_something">Something</string>
+    <string name="action_appInfo">Application Info</string>
+    <string name="kherson_city">Херсон</string>
+    <string name="input_location">Input location</string>
+    <string name="choose_dark_theme_color">Choose Dark Theme Color</string>
+    <string name="off">Off</string>
+    <string name="on">On</string>
+    <string name="enter_location">Enter location</string>
 </resources>

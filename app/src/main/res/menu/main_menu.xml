@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_locations"
+        android:title="@string/action_locations"
+        android:orderInCategory="110"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_color_style"
+        android:title="@string/action_color_style"
+        android:orderInCategory="120"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_something"
+        android:title="@string/action_something"
+        android:orderInCategory="130"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_appInfo"
+        android:title="@string/action_appInfo"
+        android:orderInCategory="140"
+        app:showAsAction="never"
+        />
+</menu>

@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 
 import com.example.weatherl2.R;
 import com.example.weatherl2.models.DayForecast;
+import com.example.weatherl2.MainActivity;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ public class DayAdapter extends ArrayAdapter<DayForecast> {
     private ArrayList<DayForecast> list;
     private Context mContext;
 
-    public DayAdapter(@NonNull Context context, ArrayList<DayForecast> list) {
+    public DayAdapter(Context context, ArrayList<DayForecast> list) {
         super(context, 0 , list);
         mContext = context;
         this.list = list;
@@ -45,8 +45,15 @@ public class DayAdapter extends ArrayAdapter<DayForecast> {
             TextView wind = v.findViewById(R.id.wind);
 
             day_of_the_week.setText(p.day);
-            tem_min.setText(p.tempMin);
-            tem_max.setText(p.tempMax);
+            if(MainActivity.isFahrengheits){
+                double min = Double.parseDouble(p.tempMin) * 1.8 + 32;
+                double max = Double.parseDouble(p.tempMax) * 1.8 + 32;
+                tem_min.setText(Double.toString(min));
+                tem_max.setText(Double.toString(max));
+            } else{
+                tem_min.setText(p.tempMin);
+                tem_max.setText(p.tempMax);
+            }
             status.setText(p.status);
             wind.setText(p.wind);
         }
