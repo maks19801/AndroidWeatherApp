@@ -2,6 +2,8 @@ package com.example.weatherl2;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,12 +32,20 @@ public class MainActivity extends AppCompatActivity {
     public static boolean isFahrengheits = false;
     private String message = "Default is Celsius";
     private OpenWeatherMapHelper weatherHelper;
+    private RecyclerView recyclerView;
+    private DayAdapter dayAdapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.activity_main);
         weatherHelper = new OpenWeatherMapHelper(getString(R.string.OPEN_WEATHER_MAP_API_KEY));
         weatherHelper.setUnits(Units.METRIC);
+        recyclerView = findViewById(R.id.recycler_view_forecast);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
 
     }
     private void updateWeather() {
@@ -74,9 +84,8 @@ public class MainActivity extends AppCompatActivity {
     private void setWeatherOnUi(ArrayList<DayForecast> weathers) {
         String cityName = ((TextView)findViewById(R.id.cityName)).getText().toString();
         ((TextView)findViewById(R.id.text)).setText(cityName);
-        DayAdapter dayAdapter = new DayAdapter(getApplicationContext(), weathers);
-        ListView listView = findViewById(R.id.days);
-        listView.setAdapter(dayAdapter);
+        dayAdapter = new DayAdapter(weathers);
+        recyclerView.setAdapter(dayAdapter);
     }
     public void goWeather(View view) {
         updateWeather();

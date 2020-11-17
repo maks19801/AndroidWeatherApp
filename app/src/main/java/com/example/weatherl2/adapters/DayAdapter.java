@@ -8,6 +8,9 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.weatherl2.R;
 import com.example.weatherl2.models.DayForecast;
 import com.example.weatherl2.MainActivity;
@@ -17,59 +20,69 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DayAdapter extends ArrayAdapter<DayForecast> {
+public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayAdapterViewHolder> {
     private ArrayList<DayForecast> list;
-    private Context mContext;
 
-    public DayAdapter(Context context, ArrayList<DayForecast> list) {
-        super(context, 0 , list);
-        mContext = context;
+
+    public DayAdapter(ArrayList<DayForecast> list) {
         this.list = list;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        View v = convertView;
-
-        if (v == null) {
-            LayoutInflater vi;
-            vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.day_forecast, null);
-        }
-
-        DayForecast p = getItem(position);
-
-        if (p != null) {
-
-            TextView tem_min = v.findViewById(R.id.tem_min);
-            TextView tem_max = v.findViewById(R.id.tem_max);
-            TextView status = v.findViewById(R.id.status);
-            TextView wind_speed = v.findViewById(R.id.wind_speed);
-            TextView wind_direction = v.findViewById(R.id.wind_direction);
-
-            Date dateObject = new Date(p.getDate()*1000);
-            TextView date = v.findViewById(R.id.format_date);
-            String formattedDate = formatDate(dateObject);
-            date.setText(formattedDate);
-            if(MainActivity.isFahrengheits){
-                double min = (p.tempMin) * 1.8 + 32;
-                double max = (p.tempMax) * 1.8 + 32;
-                tem_min.setText(Double.toString(min));
-                tem_max.setText(Double.toString(max));
-            } else{
-                tem_min.setText(Double.toString(p.tempMin));
-                tem_max.setText(Double.toString(p.tempMax));
-            }
-            status.setText(p.getDescription());
-            wind_speed.setText(Double.toString(p.getWindSpeed()));
-            wind_direction.setText(Double.toString(p.getWindDirection()));
-        }
-
-        return v;
+    public DayAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        Context context = viewGroup.getContext();
+        int layoutIdForDayForecast = R.layout.day_forecast;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(layoutIdForDayForecast, viewGroup,false);
+        DayAdapterViewHolder viewHolder = new DayAdapterViewHolder(view);
+        return viewHolder;
     }
-    private String formatDate(Date dateObject) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("E, LLL dd, yyyy HH:mm");
-        return dateFormat.format(dateObject);
+
+    @Override
+    public void onBindViewHolder(@NonNull DayAdapterViewHolder holder, int position) {
+        TextView dateTextView = holder.dateTextView;
+        TextView minTempTextView = holder.minTempTextView;
+        TextView maxTempTextView = holder.maxTempTextView;
+        TextView descriptionTextView = holder.descriptionTextView;
+        TextView windSpeedTextView = holder.windSpeedTextView;
+        TextView windDirTextView = holder.windDirTextView;
+
+        dateTextView.setText(String.valueOf(list.get(position).getDate()));
+        minTempTextView.setText(String.valueOf(list.get(position).getTempMin()) );
+        maxTempTextView.setText(String.valueOf(list.get(position).getTempMax()));
+        descriptionTextView.setText(list.get(position).getDescription());
+        windSpeedTextView.setText(String.valueOf(list.get(position).getWindSpeed()));
+        windDirTextView.setText(String.valueOf(list.get(position).getWindDirection()));
+
+    }
+
+    @Override
+    public int getItemCount() {
+        if(list == null){
+            return 0;
+        }
+        return list.size();
+    }
+    public void setWeatherData(ArrayList<DayForecast> myList){
+        list = myList;
+        notifyDataSetChanged();
+    }
+    public class DayAdapterViewHolder extends RecyclerView.ViewHolder{
+        public TextView dateTextView;
+        public TextView minTempTextView;
+        public TextView maxTempTextView;
+        public TextView descriptionTextView;
+        public TextView windSpeedTextView;
+        public TextView windDirTextView;
+        public DayAdapterViewHolder(View view){
+            super(view);
+            dateTextView = view.findViewById(R.id.date);
+            minTempTextView = view.findViewById(R.id.tem_min);
+            maxTempTextView = view.findViewById(R.id.tem_max);
+            descriptionTextView = view.findViewById(R.id.description);
+            windSpeedTextView = view.findViewById(R.id.wind_speed);
+            windDirTextView = view.findViewById(R.id.wind_direction);
+        }
     }
 }

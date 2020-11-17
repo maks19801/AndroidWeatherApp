@@ -4,13 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="horizontal"
+        >
 
-<fragment
-    android:id="@+id/contentFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:name="com.example.weatherl2.ContentFragment"
-    tools:layout="@layout/fragment_content"/>
+        <EditText
+            android:id="@+id/cityName"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:hint="@string/city_name"
+
+            android:padding="10dp" />
+
+        <Button
+            android:id="@+id/go"
+            android:layout_width="wrap_content"
+            android:layout_weight="0"
+            android:layout_height="wrap_content"
+            android:onClick="goWeather"
+            android:text="@string/go"
+            tools:ignore="OnClick" />
+
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/city"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:layout_gravity="center_horizontal" />
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="30dp"
+        android:text="Hello World!" />
+
+    <fragment
+        android:id="@+id/contentFragment"
+        android:name="com.example.weatherl2.ContentFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_content" />
 
 </LinearLayout>
