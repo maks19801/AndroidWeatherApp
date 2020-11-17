@@ -6,46 +6,89 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewDebug;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.example.weatherl2.adapters.DayAdapter;
 import com.example.weatherl2.models.DayForecast;
+import com.kwabenaberko.openweathermaplib.constants.Units;
+import com.kwabenaberko.openweathermaplib.implementation.OpenWeatherMapHelper;
+import com.kwabenaberko.openweathermaplib.implementation.callbacks.ThreeHourForecastCallback;
+import com.kwabenaberko.openweathermaplib.models.threehourforecast.ThreeHourForecast;
+import com.kwabenaberko.openweathermaplib.models.threehourforecast.ThreeHourWeather;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static boolean isFahrengheits = false;
     private String message = "Default is Celsius";
-    ArrayList<DayForecast> weathers = new ArrayList<>(Arrays.asList(
-            new DayForecast("Monday", "17", "23", "Windy", "3.6"),
-            new DayForecast("Tuesday", "17", "23", "Windy", "3.6"),
-            new DayForecast("Wednesday", "17", "23", "Windy", "3.6"),
-            new DayForecast("Thursday", "17", "23", "Windy", "3.6"),
-            new DayForecast("Friday", "17", "23", "Windy", "3.6"),
-            new DayForecast("Saturday", "17", "23", "Windy", "3.6"),
-            new DayForecast("Sunday", "17", "23", "Windy", "3.6")));
+    private OpenWeatherMapHelper weatherHelper;
 
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.activity_main);
+        weatherHelper = new OpenWeatherMapHelper(getString(R.string.OPEN_WEATHER_MAP_API_KEY));
+        weatherHelper.setUnits(Units.METRIC);
+
+    }
+    private void updateWeather() {
+        String cityName = ((TextView)findViewById(R.id.cityName)).getText().toString();
+        getHoursWeather(cityName);
+    }
+    private void getHoursWeather(String city) {
+            weatherHelper.getThreeHourForecastByCityName(city, new ThreeHourForecastCallback() {
+            ArrayList<DayForecast> weathers = new ArrayList<>();
+            @Override
+            public void onSuccess(ThreeHourForecast threeHourForecast) {
+                for(int i =0; i < threeHourForecast.getList().size()-1; i++) {
+                    Long date = threeHourForecast.getList().get(i).getDt();
+                    double tempMin = threeHourForecast.getList().get(i).getMain().getTempMin();
+                    double tempMax = threeHourForecast.getList().get(i).getMain().getTempMax();
+                    String description = threeHourForecast.getList().get(i).getWeatherArray().get(0).getDescription();
+                    double windSpeed = threeHourForecast.getList().get(i).getWind().getSpeed();
+                    double windDirection = threeHourForecast.getList().get(i).getWind().getDeg();
+
+                    DayForecast dayForecast = new DayForecast(date, tempMin, tempMax, description, windSpeed, windDirection);
+                    weathers.add(dayForecast);
+                }
+                setWeatherOnUi(weathers);
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                doOnWeatherFailure(throwable);
+            }
+        });
+    }
+    private void doOnWeatherFailure(Throwable throwable) {
+        ((TextView)findViewById(R.id.text)).setText(throwable.getMessage());
+    }
+
+    private void setWeatherOnUi(ArrayList<DayForecast> weathers) {
+        String cityName = ((TextView)findViewById(R.id.cityName)).getText().toString();
+        ((TextView)findViewById(R.id.text)).setText(cityName);
         DayAdapter dayAdapter = new DayAdapter(getApplicationContext(), weathers);
         ListView listView = findViewById(R.id.days);
         listView.setAdapter(dayAdapter);
     }
+    public void goWeather(View view) {
+        updateWeather();
+    }
+
+
+    public enum WeatherType {
+        Current,
+        Hourly,
+        Daily
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);

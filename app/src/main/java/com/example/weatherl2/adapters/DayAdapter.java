@@ -12,7 +12,10 @@ import com.example.weatherl2.R;
 import com.example.weatherl2.models.DayForecast;
 import com.example.weatherl2.MainActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class DayAdapter extends ArrayAdapter<DayForecast> {
     private ArrayList<DayForecast> list;
@@ -31,33 +34,42 @@ public class DayAdapter extends ArrayAdapter<DayForecast> {
 
         if (v == null) {
             LayoutInflater vi;
-            vi = LayoutInflater.from(mContext);
+            vi = LayoutInflater.from(getContext());
             v = vi.inflate(R.layout.day_forecast, null);
         }
 
         DayForecast p = getItem(position);
 
         if (p != null) {
-            TextView day_of_the_week = v.findViewById(R.id.day_of_the_week);
+
             TextView tem_min = v.findViewById(R.id.tem_min);
             TextView tem_max = v.findViewById(R.id.tem_max);
             TextView status = v.findViewById(R.id.status);
-            TextView wind = v.findViewById(R.id.wind);
+            TextView wind_speed = v.findViewById(R.id.wind_speed);
+            TextView wind_direction = v.findViewById(R.id.wind_direction);
 
-            day_of_the_week.setText(p.day);
+            Date dateObject = new Date(p.getDate()*1000);
+            TextView date = v.findViewById(R.id.format_date);
+            String formattedDate = formatDate(dateObject);
+            date.setText(formattedDate);
             if(MainActivity.isFahrengheits){
-                double min = Double.parseDouble(p.tempMin) * 1.8 + 32;
-                double max = Double.parseDouble(p.tempMax) * 1.8 + 32;
+                double min = (p.tempMin) * 1.8 + 32;
+                double max = (p.tempMax) * 1.8 + 32;
                 tem_min.setText(Double.toString(min));
                 tem_max.setText(Double.toString(max));
             } else{
-                tem_min.setText(p.tempMin);
-                tem_max.setText(p.tempMax);
+                tem_min.setText(Double.toString(p.tempMin));
+                tem_max.setText(Double.toString(p.tempMax));
             }
-            status.setText(p.status);
-            wind.setText(p.wind);
+            status.setText(p.getDescription());
+            wind_speed.setText(Double.toString(p.getWindSpeed()));
+            wind_direction.setText(Double.toString(p.getWindDirection()));
         }
 
         return v;
+    }
+    private String formatDate(Date dateObject) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("E, LLL dd, yyyy HH:mm");
+        return dateFormat.format(dateObject);
     }
 }
